@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* Admin editor must scroll (map page locks overflow on .app-root only) */
+html:has(.edit-page),
+body:has(.edit-page),
+#root:has(.edit-page) {
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+}
+
 .edit-page {
   min-height: 100vh;
   margin: 0;
@@ -7,6 +16,7 @@
   background: #050507;
   color: #fafafa;
   font-family: 'Space Grotesk', system-ui, sans-serif;
+  overflow: visible;
 }
 
 .edit-page-wide {
