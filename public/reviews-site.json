@@ -46,6 +46,12 @@
       "flag": "🇹🇷"
     },
     {
+      "code": "USA",
+      "name": "United States",
+      "count": 2,
+      "flag": "🇺🇸"
+    },
+    {
       "code": "HKG",
       "name": "Hong Kong",
       "count": 2,
@@ -62,12 +68,6 @@
       "name": "Germany",
       "count": 1,
       "flag": "🇩🇪"
-    },
-    {
-      "code": "USA",
-      "name": "United States",
-      "count": 1,
-      "flag": "🇺🇸"
     },
     {
       "code": "IRN",
@@ -434,6 +434,14 @@
       "review": "\"Travis is an excellent teacher. He always tailors his classes to suit my personality and interests. Learning with him feels like chatting with a close friend. I have clearly noticed great progress in my English during our lessons. Most importantly, he has helped me build up confidence in speaking English. He corrects my grammar mistakes in daily practice, making it much easier for me to memorize grammar rules. I would love to keep learning with him.\"",
       "reply": "Allan! It's been so great getting to learn with you as well. Your classes have helped me design a lot of other fun classes for students, so thank you as well. You're already growing so much, but I can't wait to see how you grow even more.",
       "countryCode": "CHN"
+    },
+    {
+      "name": "Shiraam",
+      "initial": "S",
+      "color": "#FFD23F",
+      "review": "I started my English class with a 'C,' and now it is an 'A' thanks to him :D",
+      "reply": "Thank you so much, Shiraam! It was a long climb, but your hard work paid off 💪",
+      "countryCode": "USA"
     }
   ]
 }
