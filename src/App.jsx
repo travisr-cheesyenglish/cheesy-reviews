@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import * as topojson from "topojson-client";
 import { ISO_NUM_TO_ALPHA3 } from "./data/iso";
 import { loadSiteContent } from "./loadSiteContent";
-import { COUNTRY_FLAGS } from "./data/countryMeta";
+import { COUNTRY_FLAGS, getCountryFlag } from "./data/countryMeta";
 import { Globe } from "./Globe.jsx";
 import { FiveStars } from "./FiveStars.jsx";
 
@@ -143,9 +143,11 @@ export default function App() {
 
   const { studentCountries, reviewsByCountry, headerStats } = site;
 
-  const countryName = activeCountry
-    ? studentCountries.find((c) => c.code === activeCountry)?.name
+  const activeCountryMeta = activeCountry
+    ? studentCountries.find((c) => c.code === activeCountry)
     : null;
+  const countryName = activeCountryMeta?.name ?? null;
+  const countryFlag = activeCountryMeta?.flag || getCountryFlag(activeCountry) || "";
   const activeReviews = activeCountry ? reviewsByCountry[activeCountry] || [] : [];
 
   return (
@@ -201,6 +203,7 @@ export default function App() {
           <ReviewOverlay
             country={activeCountry}
             countryName={countryName}
+            countryFlag={countryFlag}
             reviews={activeReviews}
             exiting={overlayExiting}
             onClose={requestCloseReviews}
@@ -269,7 +272,7 @@ function Stars() {
 
 /* ===== Review overlay with dispersing bubbles ===== */
 
-function ReviewOverlay({ country, countryName, reviews, exiting = false, onClose }) {
+function ReviewOverlay({ country, countryName, countryFlag, reviews, exiting = false, onClose }) {
   const overlayBackgroundClick = (e) => {
     if (e.target.closest(".bubble-pair")) return;
     onClose();
@@ -282,7 +285,11 @@ function ReviewOverlay({ country, countryName, reviews, exiting = false, onClose
       <div className={overlayClass} onClick={overlayBackgroundClick}>
         <div className="overlay-header">
           <div className="overlay-country">
-            <span className="overlay-flag">●</span>
+            {countryFlag ? (
+              <span className="overlay-flag overlay-flag--emoji" aria-hidden>{countryFlag}</span>
+            ) : (
+              <span className="overlay-flag">●</span>
+            )}
             <span className="overlay-cname">{countryName}</span>
           </div>
           <button type="button" className="close-btn" onClick={onClose}>✕ close</button>
@@ -298,7 +305,11 @@ function ReviewOverlay({ country, countryName, reviews, exiting = false, onClose
     <div className={overlayClass} onClick={overlayBackgroundClick}>
       <div className="overlay-header">
         <div className="overlay-country">
-          <span className="overlay-flag">●</span>
+          {countryFlag ? (
+            <span className="overlay-flag" aria-hidden>{countryFlag}</span>
+          ) : (
+            <span className="overlay-flag">●</span>
+          )}
           <span className="overlay-cname">{countryName}</span>
         </div>
         <button type="button" className="close-btn" onClick={onClose}>✕ close</button>
@@ -311,7 +322,11 @@ function ReviewOverlay({ country, countryName, reviews, exiting = false, onClose
             className="bubble-pair-stack"
             style={{ animationDelay: `${Math.min(i * 55, 400)}ms` }}
           >
-            <BubblePair review={review} countryName={countryName} />
+            <BubblePair
+              review={review}
+              countryName={review.countryName || countryName}
+              countryFlag={review.countryFlag || countryFlag}
+            />
           </div>
         ))}
       </div>
@@ -319,8 +334,10 @@ function ReviewOverlay({ country, countryName, reviews, exiting = false, onClose
   );
 }
 
-function BubblePair({ review, countryName }) {
+function BubblePair({ review, countryName, countryFlag }) {
   const hasReply = Boolean(String(review.reply || "").trim());
+  const fromName = countryName || review.countryName || "";
+  const flag = countryFlag || review.countryFlag || "";
 
   return (
     <div className="bubble-pair" onClick={(e) => e.stopPropagation()}>
@@ -331,7 +348,16 @@ function BubblePair({ review, countryName }) {
         <div className="bubble-body">
           <div className="bubble-meta">
             <span className="bubble-name">{review.name}</span>
-            <span className="bubble-from">from {countryName}</span>
+            <span className="bubble-from">
+              {" - from "}
+              {fromName}
+              {flag ? (
+                <span className="bubble-country-flag" aria-hidden>
+                  {" "}
+                  {flag}
+                </span>
+              ) : null}
+            </span>
           </div>
           <FiveStars variant="dark" />
           <div className="bubble-text">{review.review}</div>

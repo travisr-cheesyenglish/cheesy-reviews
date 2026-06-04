@@ -1,4 +1,4 @@
-import { normalizeCountryCode } from "./countryMeta";
+import { normalizeCountryCode, getCountryName, getCountryFlag } from "./countryMeta";
 
 /**
  * Each review keeps its `countryCode` when it matches a known student country.
@@ -31,13 +31,15 @@ export function distributeReviews(studentCountries, rawReviews) {
     const cc = normalizeCountryCode(r.countryCode);
     if (cc && codeSet.has(cc)) {
       r.countryCode = cc;
-      r.countryName = studentCountries.find((c) => c.code === cc)?.name || "";
+      r.countryName = getCountryName(cc);
+      r.countryFlag = getCountryFlag(cc);
       return;
     }
     const fallback = pool[poolIdx % pool.length];
     poolIdx += 1;
     r.countryCode = fallback;
-    r.countryName = studentCountries.find((c) => c.code === fallback)?.name || "";
+    r.countryName = getCountryName(fallback);
+    r.countryFlag = getCountryFlag(fallback);
   });
 
   const byCountry = {};
