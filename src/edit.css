@@ -160,6 +160,12 @@ body:has(.edit-page),
   text-transform: uppercase;
 }
 
+.edit-input-initial {
+  max-width: 56px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
 .edit-input-num {
   max-width: 88px;
 }

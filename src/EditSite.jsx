@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { deriveStudentCountriesFromReviews, getCountryName } from "./data/countryMeta";
 import { CountryNameField } from "./CountryNameField.jsx";
@@ -27,6 +27,19 @@ export default function EditSite() {
   const [saveMessage, setSaveMessage] = useState(null);
   const [saveError, setSaveError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const scrollToReviewIndex = useRef(null);
+
+  useEffect(() => {
+    const i = scrollToReviewIndex.current;
+    if (i == null) return;
+    scrollToReviewIndex.current = null;
+    requestAnimationFrame(() => {
+      const card = document.getElementById(`edit-review-${i}`);
+      card?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstInput = card?.querySelector("input");
+      firstInput?.focus({ preventScroll: true });
+    });
+  }, [reviews]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -166,10 +179,13 @@ export default function EditSite() {
   };
 
   const addReview = () => {
-    setReviews((prev) => [
-      ...prev,
-      { countryCode: "", name: "", initial: "", color: "#FFD23F", review: "", reply: "" },
-    ]);
+    setReviews((prev) => {
+      scrollToReviewIndex.current = prev.length;
+      return [
+        ...prev,
+        { countryCode: "", name: "", initial: "", color: "#FFD23F", review: "", reply: "" },
+      ];
+    });
   };
 
   const removeReview = (i) => {
@@ -296,7 +312,7 @@ export default function EditSite() {
         </p>
         <div className="edit-reviews">
           {reviews.map((r, i) => (
-            <div key={i} className="edit-card">
+            <div key={i} id={`edit-review-${i}`} className="edit-card">
               <div className="edit-card-head">
                 <span className="edit-card-title">
                   Review {i + 1}
@@ -324,12 +340,16 @@ export default function EditSite() {
                   />
                 </label>
                 <label className="edit-label">
-                  Initial(s)
+                  Last name initial
                   <input
-                    className="edit-input"
+                    className="edit-input edit-input-initial"
                     value={r.initial}
+                    maxLength={1}
                     onChange={(e) => patchReview(i, "initial", capitalizeInitial(e.target.value))}
                     onBlur={(e) => patchReview(i, "initial", capitalizeInitial(e.target.value))}
+                    onKeyDown={(e) => {
+                      if (e.key === " " || e.key === "Spacebar") e.preventDefault();
+                    }}
                   />
                 </label>
                 <label className="edit-label">

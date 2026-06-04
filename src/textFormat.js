@@ -9,9 +9,9 @@ export function capitalizePersonName(value) {
     .join("");
 }
 
-/** Capitalize the first character (last-name initial). */
+/** Single last-name initial: no spaces, one character, capitalized. */
 export function capitalizeInitial(value) {
-  const s = String(value || "");
+  const s = String(value || "").replace(/\s/g, "").slice(0, 1);
   if (!s) return "";
-  return s.charAt(0).toLocaleUpperCase("en") + s.slice(1);
+  return s.charAt(0).toLocaleUpperCase("en");
 }
