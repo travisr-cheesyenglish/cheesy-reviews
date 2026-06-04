@@ -306,7 +306,7 @@ function ReviewOverlay({ country, countryName, countryFlag, reviews, exiting = f
       <div className="overlay-header">
         <div className="overlay-country">
           {countryFlag ? (
-            <span className="overlay-flag" aria-hidden>{countryFlag}</span>
+            <span className="overlay-flag overlay-flag--emoji" aria-hidden>{countryFlag}</span>
           ) : (
             <span className="overlay-flag">●</span>
           )}
