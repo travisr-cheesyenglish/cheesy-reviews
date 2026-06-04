@@ -58,6 +58,12 @@
       "flag": "🇭🇰"
     },
     {
+      "code": "ECU",
+      "name": "Ecuador",
+      "count": 2,
+      "flag": "🇪🇨"
+    },
+    {
       "code": "RUS",
       "name": "Russia",
       "count": 1,
@@ -80,12 +86,6 @@
       "name": "Ethiopia",
       "count": 1,
       "flag": "🇪🇹"
-    },
-    {
-      "code": "ECU",
-      "name": "Ecuador",
-      "count": 1,
-      "flag": "🇪🇨"
     },
     {
       "code": "SLV",
@@ -442,6 +442,14 @@
       "review": "I started my English class with a 'C,' and now it is an 'A' thanks to him :D",
       "reply": "Thank you so much, Shiraam! It was a long climb, but your hard work paid off 💪",
       "countryCode": "USA"
+    },
+    {
+      "name": "Chicken",
+      "initial": "j",
+      "color": "#FFD23F",
+      "review": "hi",
+      "reply": "",
+      "countryCode": "ECU"
     }
   ]
 }
