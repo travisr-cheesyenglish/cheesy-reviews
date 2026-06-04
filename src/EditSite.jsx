@@ -1,54 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { deriveStudentCountriesFromReviews, COUNTRY_NAMES } from "./data/countryMeta";
+import { deriveStudentCountriesFromReviews, getCountryName } from "./data/countryMeta";
+import { CountryNameField } from "./CountryNameField.jsx";
 import { FiveStars } from "./FiveStars.jsx";
 import "./edit.css";
 
 const AUTH_KEY = "cheesySiteEditPassword";
-
-const COUNTRY_OPTIONS = Object.entries(COUNTRY_NAMES).sort((a, b) =>
-  a[1].localeCompare(b[1]),
-);
-
-function CountryField({ value, onChange }) {
-  const code = String(value || "")
-    .trim()
-    .toUpperCase()
-    .slice(0, 3);
-  const isKnown = code.length === 3 && COUNTRY_NAMES[code];
-  const selectValue = isKnown ? code : code ? "__other__" : "";
-
-  return (
-    <div className="edit-country-field">
-      <select
-        className="edit-input"
-        value={selectValue}
-        onChange={(e) => {
-          const next = e.target.value;
-          if (next === "__other__") onChange(code && !isKnown ? code : "");
-          else onChange(next);
-        }}
-      >
-        <option value="">— Select country —</option>
-        {COUNTRY_OPTIONS.map(([c, name]) => (
-          <option key={c} value={c}>
-            {name} ({c})
-          </option>
-        ))}
-        <option value="__other__">Other — type 3-letter code</option>
-      </select>
-      {selectValue === "__other__" ? (
-        <input
-          className="edit-input edit-input-code"
-          value={code}
-          onChange={(e) => onChange(e.target.value.toUpperCase())}
-          maxLength={3}
-          placeholder="e.g. FRA"
-        />
-      ) : null}
-    </div>
-  );
-}
 
 function adminFetch(body) {
   return fetch("/.netlify/functions/site-reviews-admin", {
@@ -169,12 +126,19 @@ export default function EditSite() {
       }
     }
     if (payload.studentCountries.length === 0) {
-      setSaveError("Add at least one review with a valid 3-letter country code.");
+      setSaveError("Add at least one review with a country (type a name like Austria).");
       return;
     }
-    for (const r of payload.reviews) {
+    for (let i = 0; i < payload.reviews.length; i++) {
+      const r = payload.reviews[i];
       if (!r.name || !r.review) {
         setSaveError("Each review needs a student name and their review text.");
+        return;
+      }
+      if (!r.countryCode || r.countryCode.length !== 3) {
+        setSaveError(
+          `Review ${i + 1} (${r.name || "unnamed"}): type a country name and press Tab to confirm (e.g. Austria).`,
+        );
         return;
       }
     }
@@ -291,7 +255,7 @@ export default function EditSite() {
       <section className="edit-section">
         <h2 className="edit-h2">Countries (from review codes)</h2>
         <p className="edit-hint">
-          Set the 3-letter ISO code on each review (e.g. JPN for Japan, 🇯🇵). Only these countries appear on the globe and in the rotating list. Count = number of reviews.
+          Type a country name on each review (e.g. Austria). Only countries with at least one review appear on the globe and bottom list. Remove all reviews from a country to remove it from the map.
         </p>
         <div className="edit-table-wrap">
           <table className="edit-table">
@@ -342,7 +306,7 @@ export default function EditSite() {
               <div className="edit-grid">
                 <label className="edit-label">
                   Country
-                  <CountryField
+                  <CountryNameField
                     value={r.countryCode || ""}
                     onChange={(v) => patchReview(i, "countryCode", v)}
                   />

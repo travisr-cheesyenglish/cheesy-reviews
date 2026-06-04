@@ -66,10 +66,78 @@ export function getCountryFlag(code) {
   return a2 ? flagFromAlpha2(a2) : "";
 }
 
+let regionDisplayNames;
+function englishCountryName(alpha2) {
+  try {
+    if (!regionDisplayNames) {
+      regionDisplayNames = new Intl.DisplayNames(["en"], { type: "region" });
+    }
+    return regionDisplayNames.of(alpha2) || "";
+  } catch {
+    return "";
+  }
+}
+
 export function getCountryName(code) {
   const c = normalizeCountryCode(code);
   if (!c) return "";
-  return COUNTRY_NAMES[c] || c;
+  if (COUNTRY_NAMES[c]) return COUNTRY_NAMES[c];
+  const a2 = ALPHA3_TO_ALPHA2[c];
+  if (a2) {
+    const intl = englishCountryName(a2);
+    if (intl) return intl;
+  }
+  return c;
+}
+
+/** Sorted { code, label } for editor autocomplete. */
+export function listCountrySuggestions() {
+  return Object.keys(ALPHA3_TO_ALPHA2)
+    .map((code) => ({ code, label: getCountryName(code) }))
+    .filter((row) => row.label)
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+/**
+ * Resolve typed country (name, 2-letter, or 3-letter code) to ISO alpha-3.
+ */
+export function resolveCountryInput(input) {
+  const raw = String(input || "").trim();
+  if (!raw) return { code: "", name: "", flag: "" };
+
+  if (/^[A-Za-z]{3}$/.test(raw)) {
+    const code = raw.toUpperCase();
+    if (ALPHA3_TO_ALPHA2[code]) {
+      return { code, name: getCountryName(code), flag: getCountryFlag(code) };
+    }
+  }
+
+  if (/^[A-Za-z]{2}$/.test(raw)) {
+    const a2 = raw.toUpperCase();
+    const code = Object.keys(ALPHA3_TO_ALPHA2).find((a3) => ALPHA3_TO_ALPHA2[a3] === a2);
+    if (code) {
+      return { code, name: getCountryName(code), flag: getCountryFlag(code) };
+    }
+  }
+
+  const lower = raw.toLowerCase();
+  const exact = Object.keys(ALPHA3_TO_ALPHA2).filter(
+    (a3) => getCountryName(a3).toLowerCase() === lower,
+  );
+  if (exact.length === 1) {
+    const code = exact[0];
+    return { code, name: getCountryName(code), flag: getCountryFlag(code) };
+  }
+
+  const starts = Object.keys(ALPHA3_TO_ALPHA2).filter((a3) =>
+    getCountryName(a3).toLowerCase().startsWith(lower),
+  );
+  if (starts.length === 1) {
+    const code = starts[0];
+    return { code, name: getCountryName(code), flag: getCountryFlag(code) };
+  }
+
+  return { code: "", name: raw, flag: "" };
 }
 
 export function getCountryDisplay(code) {

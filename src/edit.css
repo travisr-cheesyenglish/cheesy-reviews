@@ -45,6 +45,23 @@ body:has(.edit-page),
   gap: 8px;
 }
 
+.edit-country-preview {
+  font-size: 0.85rem;
+  color: #b8b8c0;
+  line-height: 1.4;
+}
+
+.edit-country-preview-code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #6b6b75;
+}
+
+.edit-country-preview--warn {
+  color: #fbbf24;
+  font-size: 0.8rem;
+}
+
 .edit-hint {
   margin: 0 0 16px;
   color: #6b6b75;

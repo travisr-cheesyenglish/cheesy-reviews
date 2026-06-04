@@ -35,6 +35,18 @@ export function distributeReviews(studentCountries, rawReviews) {
       r.countryFlag = getCountryFlag(cc);
       return;
     }
+    if (cc) {
+      r.countryCode = "";
+      r.countryName = "";
+      r.countryFlag = "";
+      return;
+    }
+    if (pool.length === 0) {
+      r.countryCode = "";
+      r.countryName = "";
+      r.countryFlag = "";
+      return;
+    }
     const fallback = pool[poolIdx % pool.length];
     poolIdx += 1;
     r.countryCode = fallback;
@@ -44,7 +56,9 @@ export function distributeReviews(studentCountries, rawReviews) {
 
   const byCountry = {};
   reviews.forEach((r) => {
-    (byCountry[r.countryCode] ||= []).push(r);
+    const cc = normalizeCountryCode(r.countryCode);
+    if (!cc) return;
+    (byCountry[cc] ||= []).push(r);
   });
   return byCountry;
 }
