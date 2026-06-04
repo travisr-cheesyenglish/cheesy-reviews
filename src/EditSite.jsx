@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { deriveStudentCountriesFromReviews, getCountryName } from "./data/countryMeta";
 import { CountryNameField } from "./CountryNameField.jsx";
 import { FiveStars } from "./FiveStars.jsx";
+import { capitalizeInitial, capitalizePersonName } from "./textFormat.js";
 import "./edit.css";
 
 const AUTH_KEY = "cheesySiteEditPassword";
@@ -94,8 +95,10 @@ export default function EditSite() {
     }),
     reviews: reviews.map((r) => {
       const row = {
-        name: String(r.name || "").trim(),
-        initial: String(r.initial || (r.name && r.name[0]) || "?").trim(),
+        name: capitalizePersonName(String(r.name || "").trim()),
+        initial: capitalizeInitial(
+          String(r.initial || (r.name && r.name[0]) || "?").trim(),
+        ),
         color: String(r.color || "#FFD23F").trim(),
         review: String(r.review || "").trim(),
         reply: String(r.reply || "").trim(),
@@ -313,11 +316,21 @@ export default function EditSite() {
                 </label>
                 <label className="edit-label">
                   Student name
-                  <input className="edit-input" value={r.name} onChange={(e) => patchReview(i, "name", e.target.value)} />
+                  <input
+                    className="edit-input"
+                    value={r.name}
+                    onChange={(e) => patchReview(i, "name", capitalizePersonName(e.target.value))}
+                    onBlur={(e) => patchReview(i, "name", capitalizePersonName(e.target.value))}
+                  />
                 </label>
                 <label className="edit-label">
                   Initial(s)
-                  <input className="edit-input" value={r.initial} onChange={(e) => patchReview(i, "initial", e.target.value)} />
+                  <input
+                    className="edit-input"
+                    value={r.initial}
+                    onChange={(e) => patchReview(i, "initial", capitalizeInitial(e.target.value))}
+                    onBlur={(e) => patchReview(i, "initial", capitalizeInitial(e.target.value))}
+                  />
                 </label>
                 <label className="edit-label">
                   Bubble color (hex)
