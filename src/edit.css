@@ -209,9 +209,29 @@ body:has(.edit-page),
 }
 
 .edit-card-title {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
   font-size: 0.9rem;
   color: #ffd23f;
+}
+
+.edit-stars-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.five-stars--inline,
+.five-stars--card {
+  margin: 0;
+}
+
+.five-stars--card .five-stars__glyph {
+  font-size: 12px;
 }
 
 .edit-btn {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { deriveStudentCountriesFromReviews, COUNTRY_NAMES } from "./data/countryMeta";
+import { FiveStars } from "./FiveStars.jsx";
 import "./edit.css";
 
 const AUTH_KEY = "cheesySiteEditPassword";
@@ -323,11 +324,17 @@ export default function EditSite() {
             Add review
           </button>
         </div>
+        <p className="edit-hint edit-stars-note">
+          Every review shows <FiveStars variant="light" className="five-stars--inline" /> on the public map (always 5 stars).
+        </p>
         <div className="edit-reviews">
           {reviews.map((r, i) => (
             <div key={i} className="edit-card">
               <div className="edit-card-head">
-                <span className="edit-card-title">Review {i + 1}</span>
+                <span className="edit-card-title">
+                  Review {i + 1}
+                  <FiveStars variant="light" className="five-stars--card" />
+                </span>
                 <button type="button" className="edit-btn edit-btn-danger edit-btn-small" onClick={() => removeReview(i)}>
                   Remove
                 </button>

@@ -4,6 +4,7 @@ import { ISO_NUM_TO_ALPHA3 } from "./data/iso";
 import { loadSiteContent } from "./loadSiteContent";
 import { COUNTRY_FLAGS } from "./data/countryMeta";
 import { Globe } from "./Globe.jsx";
+import { FiveStars } from "./FiveStars.jsx";
 
 export default function App() {
   const [site, setSite] = useState(null);
@@ -332,6 +333,7 @@ function BubblePair({ review, countryName }) {
             <span className="bubble-name">{review.name}</span>
             <span className="bubble-from">from {countryName}</span>
           </div>
+          <FiveStars variant="dark" />
           <div className="bubble-text">{review.review}</div>
         </div>
       </div>

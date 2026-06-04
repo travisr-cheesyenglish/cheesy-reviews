@@ -296,6 +296,20 @@ html, body, #root {
 .meta-r { justify-content: flex-end; }
 .bubble-name { font-weight: 700; font-size: 12.5px; }
 .bubble-name.travis { color: var(--yellow); }
+.five-stars {
+  margin: 2px 0 6px;
+  line-height: 1;
+}
+.five-stars__glyph {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.five-stars--dark .five-stars__glyph {
+  color: #e6a800;
+}
+.five-stars--light .five-stars__glyph {
+  color: #ffd23f;
+}
 .bubble-from {
   font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
   color: rgba(0,0,0,0.45);
