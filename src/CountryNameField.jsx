@@ -14,8 +14,9 @@ export function CountryNameField({ value, onChange }) {
   const code = normalizeCountryCode(value);
   const [text, setText] = useState(() => (code ? getCountryName(code) : ""));
 
+  // Sync from parent when a saved country code is loaded (not while clearing mid-edit).
   useEffect(() => {
-    setText(code ? getCountryName(code) : "");
+    if (code) setText(getCountryName(code));
   }, [code]);
 
   const commit = (raw) => {
@@ -24,8 +25,11 @@ export function CountryNameField({ value, onChange }) {
     setText(resolved.code ? resolved.name : raw.trim());
   };
 
-  const previewFlag = code ? getCountryFlag(code) : "";
-  const previewName = code ? getCountryName(code) : "";
+  const datalistPick = SUGGESTIONS.find((s) => s.label === text);
+  const committed = code && text === getCountryName(code);
+  const previewCode = datalistPick?.code || (committed ? code : "");
+  const previewFlag = previewCode ? getCountryFlag(previewCode) : "";
+  const previewName = previewCode ? getCountryName(previewCode) : "";
 
   return (
     <div className="edit-country-field">
@@ -35,10 +39,13 @@ export function CountryNameField({ value, onChange }) {
         onChange={(e) => {
           const v = e.target.value;
           setText(v);
-          const resolved = resolveCountryInput(v);
-          if (resolved.code) {
-            onChange(resolved.code);
-            setText(resolved.name);
+          const pick = SUGGESTIONS.find((s) => s.label === v);
+          if (pick) {
+            onChange(pick.code);
+            return;
+          }
+          if (code && v !== getCountryName(code)) {
+            onChange("");
           }
         }}
         onBlur={() => commit(text)}
@@ -57,15 +64,15 @@ export function CountryNameField({ value, onChange }) {
           <option key={row.code} value={row.label} />
         ))}
       </datalist>
-      {code ? (
-        <span className="edit-country-preview" title={code}>
+      {previewCode ? (
+        <span className="edit-country-preview" title={previewCode}>
           {previewFlag ? <span aria-hidden>{previewFlag} </span> : null}
           {previewName}
-          <span className="edit-country-preview-code"> ({code})</span>
+          <span className="edit-country-preview-code"> ({previewCode})</span>
         </span>
       ) : text.trim() ? (
         <span className="edit-country-preview edit-country-preview--warn">
-          Press Tab or click away to confirm, or pick a name from the list
+          Finish typing, pick from the list, or press Tab / Enter to confirm
         </span>
       ) : null}
     </div>

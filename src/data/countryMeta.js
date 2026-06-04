@@ -129,14 +129,6 @@ export function resolveCountryInput(input) {
     return { code, name: getCountryName(code), flag: getCountryFlag(code) };
   }
 
-  const starts = Object.keys(ALPHA3_TO_ALPHA2).filter((a3) =>
-    getCountryName(a3).toLowerCase().startsWith(lower),
-  );
-  if (starts.length === 1) {
-    const code = starts[0];
-    return { code, name: getCountryName(code), flag: getCountryFlag(code) };
-  }
-
   return { code: "", name: raw, flag: "" };
 }
 
